@@ -1,3 +1,6 @@
+// nox expo start --tunnel
+// eas build -p android --profile preview
+
 import React, { useState, createContext, useContext, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -8,6 +11,8 @@ import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Game from "./screens/Game";
 import Home from "./screens/Home";
+import Waiting from "./screens/Waiting";
+import GameOver from "./screens/GameOver";
 
 const Stack = createStackNavigator();
 const AuthenticatedUserContext = createContext({});
@@ -28,7 +33,9 @@ function GameStack() {
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Waiting" component={Waiting} />
       <Stack.Screen name="Game" component={Game} />
+      <Stack.Screen name="GameOver" component={GameOver} />
     </Stack.Navigator>
   );
 }

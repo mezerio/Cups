@@ -4,115 +4,156 @@ import React, {
   useLayoutEffect,
   useCallback,
 } from "react";
-import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
 import {
   collection,
   addDoc,
   orderBy,
   query,
   onSnapshot,
+  updateDoc,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { auth, database } from "../config/firebase";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import colors from "../colors";
 
 export default function Game() {
-  const [messages, setMessages] = useState([]);
   const navigation = useNavigation();
-  var boardState = [
-    "s11",
-    "s12",
-    "s13",
-    "s14",
-    "s15",
-    "s21",
-    "s22",
-    "s23",
-    "s24",
-    "s25",
-    "s31",
-    "s32",
-    "s33",
-    "s34",
-    "s35",
-    "s41",
-    "s42",
-    "s43",
-    "s44",
-    "s45",
-    "s51",
-    "s52",
-    "s53",
-    "s54",
-    "s55",
-  ];
+  var myRoomCode = useRoute().params.RoomCode;
+  var playerID = useRoute().params.myPlayerID;
+  const [playersArray, setPlayersArray] = useState([]);
+  const [currentPlayer, setCurrentPlayer] = useState(0);
+  const [boardState, setBoardState] = useState([
+    [],
+    [1],
+    [2],
+    [1, 1, 2, 2],
+    [2, 1],
+    [],
+    [1],
+    [2],
+    [1, 2],
+    [2, 1],
+    [],
+    [1],
+    [2],
+    [1, 2],
+    [2, 1],
+    [],
+    [1],
+    [2],
+    [1, 2],
+    [2, 1],
+    [],
+    [1],
+    [2],
+    [1, 2],
+    [2, 1],
+  ]);
+  // var boardState = [
+  //   [],
+  //   [1],
+  //   [2],
+  //   [2, 1, 0, 1, 2],
+  //   [2, 1],
+  //   [],
+  //   [1],
+  //   [2],
+  //   [1, 2],
+  //   [2, 1],
+  //   [],
+  //   [1],
+  //   [2],
+  //   [1, 2],
+  //   [2, 1],
+  //   [],
+  //   [1],
+  //   [2],
+  //   [1, 2],
+  //   [2, 1],
+  //   [],
+  //   [1],
+  //   [2],
+  //   [1, 2],
+  //   [2, 1],
+  // ];
 
-  const onSignOut = () => {
-    signOut(auth).catch((error) => console.log("Error logging out: ", error));
-  };
+  function moveUp(index) {
+    var newBoardState = [...boardState];
+    var newSquare = boardState[index];
+    if (!newSquare.includes(0)) {
+      newSquare.unshift(0);
+    }
+    const gapIndex = newSquare.indexOf(0);
+    console.log(newSquare, "9");
+    if (gapIndex != newSquare.length - 1) {
+      [newSquare[gapIndex], newSquare[gapIndex + 1]] = [
+        newSquare[gapIndex + 1],
+        newSquare[gapIndex],
+      ];
+      console.log(newSquare, "0");
+      setBoardState(newBoardState);
+    }
+  }
 
-  //top nav bar
+  // listen for changes and update
   useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          style={{
-            marginRight: 10,
-          }}
-          onPress={onSignOut}
-        >
-          <AntDesign
-            name="logout"
-            size={24}
-            color={colors.gray}
-            style={{ marginRight: 10 }}
-          />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
-  //retrieve prev messages
-  useLayoutEffect(() => {
-    const collectionRef = collection(database, "games");
-    const q = query(collectionRef, orderBy("createdAt", "desc"));
-
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      console.log("querySnapshot unsusbscribe");
-      setMessages(
-        querySnapshot.docs.map((doc) => ({
-          _id: doc.data()._id,
-          createdAt: doc.data().createdAt.toDate(),
-          text: doc.data().text,
-          user: doc.data().user,
-        }))
-      );
+    const docRef = doc(database, "cups", myRoomCode);
+    const unsubscribe = onSnapshot(docRef, (doc) => {
+      //
     });
     return unsubscribe;
   }, []);
 
-  //send text to firebase
-  // const onSend = useCallback((messages = []) => {
-  //   console.log(messages);
-  //   setMessages((previousMessages) =>
-  //    gf.append(previousMessages, messages)
-  //   );
-  //   // setMessages([...messages, ...messages]);
-  //   const { _id, createdAt, text, user } = messages[0];
-  //   addDoc(collection(database, "chats"), {
-  //     //id for text
-  //     _id,
-  //     createdAt,
-  //     text,
-  //     //object contining id of user aka the email
-  //     user,
-  //   });
-  // }, []);
+  // send text to firebase
+  const handleCardTaken = useCallback((cardTaken) => {
+    const docRef = doc(database, "cups", myRoomCode);
+    let nextPlayer = 0;
+    getDoc(docRef).then((doc) => {
+      if (doc.exists()) {
+        const currentPlayersArray = doc.data().playersArray || [];
+        const currentDeck = doc.data().deck || [];
+        var currentShmanksOnCard = doc.data().shmanksOnCard || 0;
+        const totPlayers = currentPlayersArray.length;
+        if (playerID < totPlayers) {
+          nextPlayer = playerID + 1;
+        } else {
+          nextPlayer = 1;
+        }
+        if (cardTaken == true) {
+          currentPlayersArray[playerID - 1].cards.push(currentDeck[0]);
+          currentPlayersArray[playerID - 1].shmanks =
+            currentPlayersArray[playerID - 1].shmanks + currentShmanksOnCard;
+          currentDeck.shift();
+          currentShmanksOnCard = 0;
+        } else {
+          currentPlayersArray[playerID - 1].shmanks--;
+          currentShmanksOnCard++;
+        }
+
+        updateDoc(docRef, {
+          playersArray: currentPlayersArray,
+          currentPlayer: nextPlayer,
+          deck: currentDeck,
+          shmanksOnCard: currentShmanksOnCard,
+        });
+      }
+    });
+  }, []);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>CUPS</Text>
       <View style={styles.playerTag}>
         <View>
@@ -123,9 +164,24 @@ export default function Game() {
       </View>
       <View style={styles.gameBoard}>
         {boardState.map((sqr, index) => (
-          <View key={index} style={styles.sqr}>
-            <Text>{sqr}</Text>
-          </View>
+          <TouchableOpacity
+            key={index}
+            style={styles.sqr}
+            onPress={() => moveUp(index)}
+          >
+            {sqr.map((piece, index) => (
+              <View
+                key={index}
+                style={[
+                  piece == 0
+                    ? styles.gap
+                    : piece == 1
+                    ? styles.piece1
+                    : styles.piece2,
+                ]}
+              ></View>
+            ))}
+          </TouchableOpacity>
         ))}
       </View>
       <View style={styles.playerTag}>
@@ -135,11 +191,41 @@ export default function Game() {
         </View>
         <Text style={styles.playerCups}>cups:16</Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  piece1: {
+    width: 40,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderTopWidth: 10,
+    borderBottomWidth: 0,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderTopColor: "brown",
+    borderBottomColor: "transparent",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+  },
+  piece2: {
+    width: 40,
+    height: 0,
+    backgroundColor: "transparent",
+    borderStyle: "solid",
+    borderTopWidth: 10,
+    borderBottomWidth: 0,
+    borderLeftWidth: 5,
+    borderRightWidth: 5,
+    borderTopColor: "black",
+    borderBottomColor: "transparent",
+    borderLeftColor: "transparent",
+
+    borderRightColor: "transparent",
+  },
+  gap: { width: 40, height: 5 },
   container: {
     flex: 1,
     backgroundColor: colors.black,
@@ -147,9 +233,11 @@ const styles = StyleSheet.create({
   sqr: {
     backgroundColor: colors.lightgrey,
     height: "18%",
+    padding: "1%",
     aspectRatio: 1,
     margin: "1%",
-    opacity: 0.3,
+    alignItems: "center",
+    justifyContent: "flex-end",
   },
   title: {
     fontSize: 42,

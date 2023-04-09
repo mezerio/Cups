@@ -28,10 +28,10 @@ export default function Signup({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.whiteSheet} />
       <SafeAreaView style={styles.form}>
-        <Text style={styles.title}>CUPS</Text>
+        <Text style={styles.title}>CUPS!</Text>
         <Text style={styles.titleSmall}>Sign Up</Text>
         <TextInput
           style={styles.input}
@@ -57,7 +57,6 @@ export default function Signup({ navigation }) {
         />
         <TouchableOpacity style={styles.button} onPress={onHandleSignup}>
           <Text style={{ fontWeight: "bold", color: "#fff", fontSize: 18 }}>
-            {" "}
             Sign Up
           </Text>
         </TouchableOpacity>
@@ -69,8 +68,10 @@ export default function Signup({ navigation }) {
             alignSelf: "center",
           }}
         >
-          <Text style={{ color: "gray", fontWeight: "600", fontSize: 14 }}>
-            Don't have an account?{" "}
+          <Text
+            style={{ color: colors.darkgrey, fontWeight: "600", fontSize: 14 }}
+          >
+            Don't have an account?
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
             <Text
@@ -80,14 +81,13 @@ export default function Signup({ navigation }) {
                 fontSize: 14,
               }}
             >
-              {" "}
               Log In
             </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
       <StatusBar barStyle="light-content" />
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   input: {
+    color: colors.white,
     backgroundColor: colors.darkblue,
     height: 58,
     marginBottom: 20,

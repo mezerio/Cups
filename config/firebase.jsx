@@ -4,7 +4,8 @@ import { getFirestore } from "firebase/firestore";
 import Constants from "expo-constants";
 // Firebase config
 const firebaseConfig = {
-  apiKey: Constants.manifest.extra.apiKey,
+  // apiKey: Constants.manifest.extra.apiKey,
+  apiKey: "AIzaSyDH-_zBQVqd_xtltCq6bgq97nx6JVNRaWY",
   authDomain: Constants.manifest.extra.authDomain,
   databaseURL: Constants.manifest.extra.databaseURL,
   projectId: Constants.manifest.extra.projectId,

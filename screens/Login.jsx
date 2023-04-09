@@ -30,7 +30,7 @@ export default function Login({ navigation }) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.form}>
-        <Text style={styles.title}>CUPS</Text>
+        <Text style={styles.title}>CUPS!</Text>
         <Text style={styles.titleSmall}>Log In</Text>
         <TextInput
           style={styles.input}
@@ -67,7 +67,9 @@ export default function Login({ navigation }) {
             alignSelf: "center",
           }}
         >
-          <Text style={{ color: "gray", fontWeight: "600", fontSize: 14 }}>
+          <Text
+            style={{ color: colors.darkgrey, fontWeight: "600", fontSize: 14 }}
+          >
             Don't have an account?
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Signup")}>

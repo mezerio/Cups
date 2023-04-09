@@ -6,10 +6,10 @@ export default {
     slug: "cups",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/icon.png",
+    icon: "./assets/shmanksIcon.png",
     userInterfaceStyle: "light",
     splash: {
-      image: "./assets/splash.png",
+      image: "./assets/shmanksIcon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff",
     },
@@ -18,15 +18,19 @@ export default {
       supportsTablet: true,
     },
     android: {
+      package: "com.mezerio.shmanks",
       adaptiveIcon: {
-        foregroundImage: "./assets/adaptive-icon.png",
+        foregroundImage: "./assets/shmanksIcon.png",
         backgroundColor: "#ffffff",
       },
     },
     web: {
-      favicon: "./assets/favicon.png",
+      favicon: "./assets/shmanksIcon.png",
     },
     extra: {
+      eas: {
+        projectId: "0be2c7e6-3ba4-4f96-9bb1-92151098a0b5",
+      },
       apiKey: process.env.API_KEY,
       authDomain: process.env.AUTH_DOMAIN,
       databaseURL: process.env.DATABASE_URL,
