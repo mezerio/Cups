@@ -28,8 +28,35 @@ import {
 const Home = () => {
   const [roomCode, setRoomCode] = useState("");
   const navigation = useNavigation();
-  var playerID = 0;
+  var myPlayerID = 1;
   var playersArray = [];
+  var startingBoard = {
+    s11: [],
+    s12: [],
+    s13: [],
+    s14: [],
+    s15: [],
+    s21: [],
+    s22: [],
+    s23: [],
+    s24: [],
+    s25: [],
+    s31: [],
+    s32: [],
+    s33: [],
+    s34: [],
+    s35: [],
+    s41: [],
+    s42: [],
+    s43: [],
+    s44: [],
+    s45: [],
+    s51: [],
+    s52: [],
+    s53: [],
+    s54: [],
+    s55: [],
+  };
 
   function generateNewCode() {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -50,21 +77,24 @@ const Home = () => {
 
   async function handleCreateRoom() {
     const newRoomCode = await generateNewCode();
-    //console.log("new room code: ", newRoomCode);
     const docRef = doc(database, "cups", newRoomCode);
-    playersArray = [{ id: 1, name: "player1", cards: [], shmanks: 11 }];
-    playerID = 1;
+    playersArray = [
+      {
+        id: 1,
+        name: "player1",
+        cups: 11,
+        rank: 1000,
+      },
+    ];
     setDoc(docRef, {
       playersArray,
-      playerID,
-      gameStarted: false,
-      playersExited: 0,
+      boardState: startingBoard,
+      currentPlayer: 0,
+      resignedPlayer: 0,
     });
-    //console.log(playerID, "pi");
     navigation.navigate("Game", {
-      // navigation.navigate("GameOver", {
-      RoomCode: newRoomCode,
-      myPlayerID: playerID,
+      myRoomCode: newRoomCode,
+      myPlayerID: myPlayerID,
     });
   }
 
@@ -74,28 +104,22 @@ const Home = () => {
       getDoc(docRef).then((doc) => {
         if (doc.exists()) {
           const currentPlayersArray = doc.data().playersArray || [];
-          //console.log(playerID, "pi01");
-
-          playerID = currentPlayersArray.length + 1;
-          //console.log(playerID, "pi1");
+          myPlayerID = 2;
 
           const myPlayer = {
-            id: currentPlayersArray.length + 1,
-            name: String("player" + playerID),
-            cards: [],
-            shmanks: 11,
+            id: 2,
+            name: "player2",
+            cups: 11,
+            rank: 1000,
           };
           currentPlayersArray.push(myPlayer);
-          setDoc(docRef, {
+          updateDoc(docRef, {
+            currentPlayer: 1,
             playersArray: currentPlayersArray,
-            playerID: playerID,
-            gameStarted: false,
-            playersExited: 0,
           });
-          //console.log(playerID, "pi2");
           navigation.navigate("Game", {
-            RoomCode: roomCode,
-            myPlayerID: playerID,
+            myRoomCode: roomCode,
+            myPlayerID: myPlayerID,
           });
           setRoomCode("");
         }

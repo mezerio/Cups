@@ -6,10 +6,10 @@ export default {
     slug: "cups",
     version: "1.0.0",
     orientation: "portrait",
-    icon: "./assets/shmanksIcon.png",
+    icon: "./assets/cupsIcon.png",
     userInterfaceStyle: "light",
     splash: {
-      image: "./assets/shmanksIcon.png",
+      image: "./assets/cupsIcon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff",
     },
@@ -18,14 +18,14 @@ export default {
       supportsTablet: true,
     },
     android: {
-      package: "com.mezerio.shmanks",
+      package: "com.mezerio.cups",
       adaptiveIcon: {
-        foregroundImage: "./assets/shmanksIcon.png",
+        foregroundImage: "./assets/cupsIcon.png",
         backgroundColor: "#ffffff",
       },
     },
     web: {
-      favicon: "./assets/shmanksIcon.png",
+      favicon: "./assets/cupsIcon.png",
     },
     extra: {
       eas: {
