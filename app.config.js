@@ -27,18 +27,11 @@ export default {
     web: {
       favicon: "./assets/cupsIcon.png",
     },
+    owner: "maazvali",
     extra: {
       eas: {
-        projectId: "0be2c7e6-3ba4-4f96-9bb1-92151098a0b5",
+        projectId: "9b290c1d-227f-4ff5-90f7-032e3eaaa9dd",
       },
-      apiKey: process.env.API_KEY,
-      authDomain: process.env.AUTH_DOMAIN,
-      databaseURL: process.env.DATABASE_URL,
-      projectId: process.env.PROJECT_ID,
-      storageBucket: process.env.STORAGE_BUCKET,
-      messagingSenderId: process.env.MESSAGING_SENDER_ID,
-      appId: process.env.APP_ID,
-      measurementId: process.env.MEASUREMENT_ID,
     },
   },
 };
