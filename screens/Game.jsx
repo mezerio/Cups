@@ -412,7 +412,7 @@ export default function Game() {
       ) : (
         <View style={styles.waitingPopUp}>
           <Text style={styles.gameOver}>
-            {(gameOver === 2 ? "Black" : "Brown") + " is victorious!"}
+            {(gameOver === 2 ? "Black" : "White") + " is victorious!"}
           </Text>
           {/* <TouchableOpacity style={styles.waitingBtn} onPress={handleRematch}>
             <Text style={styles.waitingText}>Rematch</Text>

@@ -1,4 +1,4 @@
-// nox expo start --tunnel
+// npx expo start --tunnel
 // eas build -p android --profile preview
 
 import React, { useState, createContext, useContext, useEffect } from "react";
